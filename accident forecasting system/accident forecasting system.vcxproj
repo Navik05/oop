@@ -76,6 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\Naviko\Desktop\accident forecasting system\accident forecasting system\json-develop\json-develop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,6 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\Naviko\Desktop\accident forecasting system\accident forecasting system\json-develop\json-develop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +129,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="accident forecasting system.cpp" />
+    <ClCompile Include="AccidentSystem.cpp" />
+    <ClCompile Include="AnalyticsModule.cpp" />
+    <ClCompile Include="DataReceiver.cpp" />
+    <ClCompile Include="DataStorage.cpp" />
+    <ClCompile Include="DataStorageImpl.cpp" />
+    <ClCompile Include="DataStorageProxy.cpp" />
+    <ClCompile Include="EmailNotifier.cpp" />
+    <ClCompile Include="NotificationSystem.cpp" />
+    <ClCompile Include="PressureSensor.cpp" />
+    <ClCompile Include="Sensor.cpp" />
+    <ClCompile Include="SMSNotifier.cpp" />
+    <ClCompile Include="TemperatureSensor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnalyticsModule.h" />
+    <ClInclude Include="DataReceiver.h" />
+    <ClInclude Include="DataStorage.h" />
+    <ClInclude Include="DataStorageImpl.h" />
+    <ClInclude Include="DataStorageProxy.h" />
+    <ClInclude Include="EmailNotifier.h" />
+    <ClInclude Include="NotificationSystem.h" />
+    <ClInclude Include="PressureSensor.h" />
+    <ClInclude Include="Sensor.h" />
+    <ClInclude Include="SMSNotifier.h" />
+    <ClInclude Include="TemperatureSensor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,13 +4,13 @@
 
 using namespace std;
 
-struct AnalysisResult {
-    string message;
-    bool isCritical;
-};
-
 class AnalyticsModule {
+    struct AnalysisResult {
+        string message;
+        bool isCritical;
+    } result;
 public:
-    AnalysisResult analyzeData(const string& data);
-    AnalysisResult predictFailures(const string& data);
+    AnalysisResult getResult();
+    void analyzeData(const string& data);
+    void predictFailures(const string& data);
 };

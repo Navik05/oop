@@ -82,15 +82,19 @@ void simulateSystem() {
                     cout << "Данные успешно сохранены в хранилище" << endl;
                 }
 
-                // 5.5 Анализ данных и отправка уведомлений при необходимости
-                auto analysis = analytics.analyzeData(data);
-                if (!analysis.isCritical && analysis.message != "Норма")
-                    emailNotifier.sendAlert(analysis.message);
-                else if(analysis.message != "Норма")
-                    emailNotifier.sendAlert(analysis.message);
+                // 5.5 Анализ данных и проверка на критические события
+                analytics.analyzeData(data);
+                auto  analyze = analytics.getResult();
 
-                // 5.6 Проверка на критические события и отправка уведомлений при необходимости
-                auto predictions = analytics.predictFailures(data);
+                analytics.predictFailures(data);
+                auto predictions = analytics.getResult();
+
+                // 5.6 Отправка уведомлений при необходимости
+                if (!analyze.isCritical && analyze.message != "Норма")
+                    emailNotifier.sendAlert(analyze.message);
+                else if(analyze.message != "Норма")
+                    emailNotifier.sendAlert(analyze.message);
+
                 if (!predictions.isCritical && predictions.message != "Норма")
                     smsNotifier.sendAlert(predictions.message);
                 else if (predictions.message != "Норма")
@@ -107,10 +111,10 @@ void simulateSystem() {
 
     string query1 = "SELECT * FROM sensor_data WHERE type='temperature'";
     cout << "Первый запрос: " << query1 << endl;
-    cout << "Результат: " << storageProxy.retrieveData(query1) << "\n" << endl;
+    cout << storageProxy.retrieveData(query1) << "\n" << endl;
 
     cout << "Второй запрос (должен быть из кэша): " << query1 << endl;
-    cout << "Результат: " << storageProxy.retrieveData(query1) << "\n" << endl;
+    cout << storageProxy.retrieveData(query1) << "\n" << endl;
 
     cout << "=== Завершение работы системы ===\n" << endl;
 }

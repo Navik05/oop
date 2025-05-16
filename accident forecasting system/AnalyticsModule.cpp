@@ -3,8 +3,12 @@
 
 using json = nlohmann::json;
 
-AnalysisResult AnalyticsModule::analyzeData(const string& data) {
-    AnalysisResult result;
+AnalyticsModule::AnalysisResult AnalyticsModule::getResult()
+{
+    return result;
+}
+
+void AnalyticsModule::analyzeData(const string& data) {
     result.message = "Норма";
     result.isCritical = false;
 
@@ -24,12 +28,9 @@ AnalysisResult AnalyticsModule::analyzeData(const string& data) {
         result.message = "Ошибка анализа JSON в модуле аналитики: " + std::string(e.what());
         result.isCritical = true;
     }
-
-    return result;
 }
 
-AnalysisResult AnalyticsModule::predictFailures(const string& data) {
-    AnalysisResult result;
+void AnalyticsModule::predictFailures(const string& data) {
     result.message = "Норма";
     result.isCritical = false;
 
@@ -48,6 +49,4 @@ AnalysisResult AnalyticsModule::predictFailures(const string& data) {
         result.message = "Ошибка анализа JSON в модуле прогнозирования: " + std::string(e.what());
         result.isCritical = true;
     }
-
-    return result;
 }

@@ -4,5 +4,5 @@
 class TemperatureSensor : public Sensor {
 public:
     void collData() override;
-    SensorData sendData() override;
+    vector<SensorData> sendData() override;
 };

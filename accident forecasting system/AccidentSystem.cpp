@@ -8,6 +8,10 @@
 #include "AnalyticsModule.h"
 #include "EmailNotifier.h"
 #include "SMSNotifier.h"
+#include "JsonDataAdapter.h"
+#include "LoggingNotifierDecorator.h"
+#include "SensorGroup.h"
+#include "VectorSensorDataCollection.h"
 
 void simulateSystem();
 using namespace std;
@@ -32,10 +36,15 @@ int main() {
 void simulateSystem() {
     cout << "\n=== Инициализация системы мониторинга ===\n" << endl;
 
-    // 1. Инициализация датчиков
-    vector<unique_ptr<Sensor>> sensors;
-    sensors.push_back(make_unique<TemperatureSensor>());
-    sensors.push_back(make_unique<PressureSensor>());
+    // Создаем отдельные датчики (5-6)
+    auto tempSensor = make_shared<TemperatureSensor>();
+    auto voltageSensor = make_shared<VoltageSensor>();
+
+    // Создаем группу датчиков (5-6)
+    auto sensorGroup = make_shared<SensorGroup>("*Основные датчики*");
+    sensorGroup->add(tempSensor);
+    sensorGroup->add(voltageSensor);
+
     cout << "Датчики инициализированы: 1 температурный, 1 датчик давления" << endl;
 
     // 2. Инициализация компонентов обработки данных
@@ -50,59 +59,57 @@ void simulateSystem() {
 
     // 4. Инициализация системы оповещения
     EmailNotifier emailNotifier;
-    SMSNotifier smsNotifier;
+
+    // Создание декорированных уведомителей (5-6)
+    auto smsNotifier = make_unique<LoggingNotifierDecorator>(
+        make_unique<SMSNotifier>()
+    );
+
     cout << "Система оповещения готова (Email и SMS)\n" << endl;
 
     cout << "=== Запуск цикла мониторинга ===" << endl;
 
-    // 5. Основной цикл работы системы
-    for (int i = 0; i < 1; ++i) {
-        cout << "\nЦикл мониторинга #" << i + 1 << endl;
-        cout << "----------------------------" << endl;
+    // Собираем данные со всей группы (5-6)
+    sensorGroup->collData();
 
-        for (auto& sensor : sensors) {
-            // 5.1 Сбор данных с датчиков
-            sensor->collData();
+    // Отправляем данные всей группы на сервер (5-6)
+    vector<SensorData> data = sensorGroup->sendData();
 
-            // 5.2 Отправка данных на сервер
-            auto data = sensor->sendData();
+    for (int i = 0; i < data.size(); ++i)
+    {
+        // Преобразование данных из JSON формата в SensorData (5-6)
+        JsonDataAdapter jsonAdapter(data[i]);
 
-            // 5.3 Прием и проверка данных
-            if (receiver.receiveData(data)) {
+        // 5.3 Прием и проверка данных
+        if (receiver.receiveData(jsonAdapter)) {
 
-                // 5.4 Сохранение данных (с кэшированием через прокси)
-                storageProxy.saveData(data);
-
-                // 5.5 Анализ данных и проверка на критические события
-                auto  analyze = analytics.analyzeData(data);
-                auto predictions = analytics.predictFailures(data);
-
-                // 5.6 Отправка уведомлений при необходимости
-                if (!analyze.isCritical && analyze.message != "Норма")
-                    emailNotifier.sendAlert(analyze.message);
-                else if (analyze.message != "Норма")
-                    emailNotifier.sendAlert(analyze.message);
-
-                if (!predictions.isCritical && predictions.message != "Норма")
-                    smsNotifier.sendAlert(predictions.message);
-                else if (predictions.message != "Норма")
-                    smsNotifier.sendAlert(predictions.message);
-            }
-            else {
-                cerr << "Ошибка: Данные не прошли валидацию" << endl;
-            }
+            // 5.4 Сохранение данных (с кэшированием через прокси)
+            storageProxy.saveData(data[i]);
+        }
+        else {
+            cerr << "Ошибка: Данные не прошли валидацию" << endl;
         }
     }
 
-    // 6. Демонстрация работы кэширующего прокси
-    cout << "\n=== Тестирование кэширующего прокси ===\n" << endl;
+    // Создаем коллекцию на основе вектора
+    auto collection = make_shared<VectorSensorDataCollection>(data);
 
-    string query1 = "SELECT * FROM sensor_data WHERE type='temperature'";
-    cout << "Первый запрос: " << query1 << endl;
-    cout << storageProxy.retrieveData(query1) << "\n" << endl;
+    // Анализируем все данные и проверка на критические события
+    cout << "\n--- Анализ всех данные ---" << endl;
+    auto  analyze = analytics.analyzeAllData(collection);
+    for (const auto& result : analyze) {
+        if (!result.isCritical && result.message != "Норма")
+            emailNotifier.sendAlert(result.message);
+        else if (result.message != "Норма")
+            emailNotifier.sendAlert(result.message);
+    }
 
-    cout << "Второй запрос (должен быть из кэша): " << query1 << endl;
-    cout << storageProxy.retrieveData(query1) << "\n" << endl;
-
-    cout << "=== Завершение работы системы ===\n" << endl;
+    cout << "\n--- Прогнозирование всех отказов ---" << endl;
+    auto predictions = analytics.predictAllFailures(collection);
+    for (const auto& prediction : predictions) {
+        if (!prediction.isCritical && prediction.message != "Норма")
+            smsNotifier->sendAlert(prediction.message);
+        else if (prediction.message != "Норма")
+            smsNotifier->sendAlert(prediction.message);
+    }
 }

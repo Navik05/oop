@@ -1,8 +1,8 @@
 #pragma once  
 #include "Sensor.h"  
 
-class PressureSensor : public Sensor {
+class VoltageSensor : public Sensor {
 public:
     void collData() override;
-    SensorData sendData() override;
+    vector<SensorData> sendData() override;
 };

@@ -1,6 +1,7 @@
 #include "DataReceiver.h"
 
-bool DataReceiver::receiveData(SensorData data) {
+bool DataReceiver::receiveData(IDataAdapter& adapter) {
+    SensorData data = adapter.convertToSensorData();
     if (!validateData(data)) {
         cerr << "Получены неверные данные" << endl;
         return false;

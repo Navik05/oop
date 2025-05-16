@@ -1,7 +1,7 @@
 #include "DataStorageImpl.h"   
 
 bool DataStorageImpl::saveData(SensorData data) {
-    cout << "Данные сохранены в базе данных" << endl;
+    cout << "Данные сохранены в базе данных\n" << endl;
     return true;
 }
 

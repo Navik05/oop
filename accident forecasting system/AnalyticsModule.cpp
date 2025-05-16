@@ -28,3 +28,25 @@ AnalyticsModule::AnalysisResult AnalyticsModule::predictFailures(SensorData data
     }
     return result;
 }
+
+vector<AnalyticsModule::AnalysisResult> AnalyticsModule::analyzeAllData(
+    shared_ptr<SensorDataCollection> collection
+) {
+    vector<AnalysisResult> results;
+    auto iterator = collection->createIterator();
+    while (iterator->hasNext()) {
+        results.push_back(analyzeData(iterator->next()));
+    }
+    return results;
+}
+
+vector<AnalyticsModule::AnalysisResult> AnalyticsModule::predictAllFailures(
+    shared_ptr<SensorDataCollection> collection
+) {
+    vector<AnalysisResult> results;
+    auto iterator = collection->createIterator();
+    while (iterator->hasNext()) {
+        results.push_back(predictFailures(iterator->next()));
+    }
+    return results;
+}

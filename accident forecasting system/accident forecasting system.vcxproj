@@ -131,29 +131,33 @@
   <ItemGroup>
     <ClCompile Include="AccidentSystem.cpp" />
     <ClCompile Include="AnalyticsModule.cpp" />
+    <ClCompile Include="DataAdapter.cpp" />
     <ClCompile Include="DataReceiver.cpp" />
     <ClCompile Include="DataStorage.cpp" />
     <ClCompile Include="DataStorageImpl.cpp" />
     <ClCompile Include="DataStorageProxy.cpp" />
     <ClCompile Include="EmailNotifier.cpp" />
     <ClCompile Include="NotificationSystem.cpp" />
-    <ClCompile Include="PressureSensor.cpp" />
+    <ClCompile Include="VoltageSensor.cpp" />
     <ClCompile Include="Sensor.cpp" />
     <ClCompile Include="SMSNotifier.cpp" />
     <ClCompile Include="TemperatureSensor.cpp" />
+    <ClCompile Include="XmlToJsonAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnalyticsModule.h" />
+    <ClInclude Include="DataAdapter.h" />
     <ClInclude Include="DataReceiver.h" />
     <ClInclude Include="DataStorage.h" />
     <ClInclude Include="DataStorageImpl.h" />
     <ClInclude Include="DataStorageProxy.h" />
     <ClInclude Include="EmailNotifier.h" />
     <ClInclude Include="NotificationSystem.h" />
-    <ClInclude Include="PressureSensor.h" />
+    <ClInclude Include="VoltageSensor.h" />
     <ClInclude Include="Sensor.h" />
     <ClInclude Include="SMSNotifier.h" />
     <ClInclude Include="TemperatureSensor.h" />
+    <ClInclude Include="XmlToJsonAdapter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

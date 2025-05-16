@@ -5,7 +5,7 @@ DataStorageProxy::DataStorageProxy(shared_ptr<DataStorage> storage)
 }
 
 // Очищаем кэш при сохранении новых данных
-bool DataStorageProxy::saveData(const string& data) {
+bool DataStorageProxy::saveData(SensorData data) {
     cache.clear();
     return realStorage->saveData(data);
 }

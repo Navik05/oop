@@ -1,18 +1,13 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <memory>
+﻿#include <iostream>
 #include <vector>
-#include <thread>
-#include <chrono>
 #include "TemperatureSensor.h"
-#include "PressureSensor.h"
+#include "VoltageSensor.h"
 #include "DataReceiver.h"
 #include "DataStorageImpl.h"
 #include "DataStorageProxy.h"
 #include "AnalyticsModule.h"
 #include "EmailNotifier.h"
 #include "SMSNotifier.h"
-#include <single_include/nlohmann/json.hpp>
 
 void simulateSystem();
 using namespace std;
@@ -41,24 +36,24 @@ void simulateSystem() {
     vector<unique_ptr<Sensor>> sensors;
     sensors.push_back(make_unique<TemperatureSensor>());
     sensors.push_back(make_unique<PressureSensor>());
-    cout << "Датчики инициализированы: 1 температурный, 1 датчик давления\n" << endl;
+    cout << "Датчики инициализированы: 1 температурный, 1 датчик давления" << endl;
 
     // 2. Инициализация компонентов обработки данных
     DataReceiver receiver;
     auto storageImpl = make_shared<DataStorageImpl>();
     DataStorageProxy storageProxy(storageImpl);
-    cout << "Система приема и хранения данных готова к работе\n" << endl;
+    cout << "Система приема и хранения данных готова к работе" << endl;
 
     // 3. Инициализация аналитического модуля
     AnalyticsModule analytics;
-    cout << "Аналитический модуль активирован\n" << endl;
+    cout << "Аналитический модуль активирован" << endl;
 
     // 4. Инициализация системы оповещения
     EmailNotifier emailNotifier;
     SMSNotifier smsNotifier;
     cout << "Система оповещения готова (Email и SMS)\n" << endl;
 
-    cout << "=== Запуск цикла мониторинга ===\n" << endl;
+    cout << "=== Запуск цикла мониторинга ===" << endl;
 
     // 5. Основной цикл работы системы
     for (int i = 0; i < 1; ++i) {
@@ -67,32 +62,25 @@ void simulateSystem() {
 
         for (auto& sensor : sensors) {
             // 5.1 Сбор данных с датчиков
-            string data = sensor->collData();
-            cout << "\nДанные с датчика: " << data << endl;
+            sensor->collData();
 
             // 5.2 Отправка данных на сервер
-            sensor->sendData(data);
+            auto data = sensor->sendData();
 
             // 5.3 Прием и проверка данных
             if (receiver.receiveData(data)) {
-                cout << "Данные прошли валидацию" << endl;
 
                 // 5.4 Сохранение данных (с кэшированием через прокси)
-                if (storageProxy.saveData(data)) {
-                    cout << "Данные успешно сохранены в хранилище" << endl;
-                }
+                storageProxy.saveData(data);
 
                 // 5.5 Анализ данных и проверка на критические события
-                analytics.analyzeData(data);
-                auto  analyze = analytics.getResult();
-
-                analytics.predictFailures(data);
-                auto predictions = analytics.getResult();
+                auto  analyze = analytics.analyzeData(data);
+                auto predictions = analytics.predictFailures(data);
 
                 // 5.6 Отправка уведомлений при необходимости
                 if (!analyze.isCritical && analyze.message != "Норма")
                     emailNotifier.sendAlert(analyze.message);
-                else if(analyze.message != "Норма")
+                else if (analyze.message != "Норма")
                     emailNotifier.sendAlert(analyze.message);
 
                 if (!predictions.isCritical && predictions.message != "Норма")

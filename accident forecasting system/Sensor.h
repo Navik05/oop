@@ -1,12 +1,19 @@
 #pragma once  
 #include <iostream>
-#include <string>
 
 using namespace std;
 
+struct SensorData {
+    string type;
+    int sensor_id;
+    double value;
+    string unit;
+};
+
 class Sensor {
 public:
-    virtual string collData() = 0;
-    virtual void sendData(const string& data) = 0;
+    SensorData data;
+    virtual void collData() = 0;
+    virtual SensorData sendData() = 0;
     virtual ~Sensor() = default;
 };

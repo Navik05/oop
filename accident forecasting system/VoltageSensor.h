@@ -1,7 +1,7 @@
 #pragma once  
 #include "Sensor.h"  
 
-class TemperatureSensor : public Sensor {
+class PressureSensor : public Sensor {
 public:
     void collData() override;
     SensorData sendData() override;

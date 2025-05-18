@@ -1,16 +1,18 @@
 #pragma once  
+#include "SensorDataCollection.h"
+#include "Sensor.h"
 #include <string>
-#include <iostream>
 
 using namespace std;
 
 class AnalyticsModule {
+public:
     struct AnalysisResult {
         string message;
         bool isCritical;
     } result;
-public:
-    AnalysisResult getResult();
-    void analyzeData(const string& data);
-    void predictFailures(const string& data);
+    AnalysisResult analyzeData(SensorData data);
+    AnalysisResult predictFailures(SensorData data);
+    vector<AnalysisResult> analyzeAllData(shared_ptr<SensorDataCollection> collection);
+    vector<AnalysisResult> predictAllFailures(shared_ptr<SensorDataCollection> collection);
 };

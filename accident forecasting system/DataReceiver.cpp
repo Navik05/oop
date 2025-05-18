@@ -1,44 +1,23 @@
 #include "DataReceiver.h"
-#include <regex>
-#include <single_include/nlohmann/json.hpp>
 
-using json = nlohmann::json;
-
-bool DataReceiver::receiveData(const string& data) {
+bool DataReceiver::receiveData(SensorData data) {
     if (!validateData(data)) {
         cerr << "Получены неверные данные" << endl;
         return false;
     }
-
-    string formatted = formatData(data);
-    cout << "Данные получены и отформатированы: " << formatted << endl;
+    SensorData formatted = formatData(data);
     return true;
 }
 
-bool DataReceiver::validateData(const string& data) {
-    try {
-        json j = json::parse(data);
-
-        // Проверка наличия всех полей
-        if (!j.contains("sensor_id") || !j.contains("type") ||
-            !j.contains("value") || !j.contains("unit") || !j.contains("timestamp")) {
-            return false;
-        }
-
-        // Проверка формата timestamp
-        regex time_regex(R"(^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$)");
-        if (!regex_match(j["timestamp"].get<string>(), time_regex)) {
-            return false;
-        }
-
-        return true;
-    }
-    catch (const json::parse_error& e) {
-        cerr << "Ошибка целостности JSON: " << e.what() << endl;
+bool DataReceiver::validateData(SensorData data) {
+    // Проверка данных
+    if (data.value < 0 || data.sensor_id < 1 || empty(data.unit))
         return false;
-    }
+    else   
+        return true;
 }
 
-string DataReceiver::formatData(const string& data) {
+SensorData DataReceiver::formatData(SensorData data) {
+    cout << "Данные получены и отформатированы" << endl;
     return data;
 }

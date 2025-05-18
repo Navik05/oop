@@ -1,12 +1,21 @@
 #pragma once  
+#include <vector>
 #include <iostream>
-#include <string>
 
 using namespace std;
 
+struct SensorData {
+    string type;
+    int sensor_id;
+    double value;
+    string unit;
+};
+
 class Sensor {
 public:
-    virtual string collData() = 0;
-    virtual void sendData(const string& data) = 0;
+    SensorData data;
+    virtual void collData() = 0;
+    virtual vector<SensorData> sendData() = 0;
+    virtual void add(shared_ptr<Sensor> sensor) {}
     virtual ~Sensor() = default;
 };

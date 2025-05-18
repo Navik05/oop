@@ -1,52 +1,52 @@
 #include "AnalyticsModule.h"
-#include <single_include/nlohmann/json.hpp>
 
-using json = nlohmann::json;
+AnalyticsModule::AnalysisResult AnalyticsModule::analyzeData(SensorData data) {
+    result.message = "Норма";
+    result.isCritical = false;
+    
+    cout << "Анализ данных с датчика " << data.type << data.sensor_id  << endl;
+    if (data.type == "temperature" && data.value > 20.0) { //20.0-39.9
+        result.message = "ПРЕДУПРЕЖДЕНИЕ! Обнаружена высокая температура (" + to_string(data.value) + data.unit+")";
+    }
 
-AnalyticsModule::AnalysisResult AnalyticsModule::getResult()
-{
+    else if (data.type == "voltage" && data.value > 5.0) { // 1.0-10.9
+        result.message = "ПРЕДУПРЕЖДЕНИЕ! Обнаружено высокое напряжение (" + to_string(data.value) + data.unit + ")";
+    }
     return result;
 }
 
-void AnalyticsModule::analyzeData(const string& data) {
+AnalyticsModule::AnalysisResult AnalyticsModule::predictFailures(SensorData data) {
     result.message = "Норма";
     result.isCritical = false;
 
-    try {
-        json j = json::parse(data);
-        cout << "Анализ данных с датчика: " << j["sensor_id"] << endl;
-
-        if (j["type"] == "temperature" && j["value"] > 20.0) { //20.0-39.9
-            result.message = "ПРЕДУПРЕЖДЕНИЕ! Обнаружена высокая температура (" + to_string(j["value"]) + " C)";
-        }
-
-        else if (j["type"] == "pressure" && j["value"] > 5.0) { // 1.0-10.9
-            result.message = "ПРЕДУПРЕЖДЕНИЕ! Обнаружено высокое напряжение (" + to_string(j["value"]) + " V)";
-        }
+    cout << "Прогнозирование отказов датчика " << data.type << data.sensor_id << endl;
+    if (data.type == "temperature" && data.value > 30.0) {
+        result.message = "ОПАСНО! Высокий риск перегрева";
     }
-    catch (const json::parse_error& e) {
-        result.message = "Ошибка анализа JSON в модуле аналитики: " + std::string(e.what());
-        result.isCritical = true;
+    else if (data.type == "voltage" && data.value > 7.5) {
+        result.message = "ОПАСНО! Высокий риск скачка напряжения";
     }
+    return result;
 }
 
-void AnalyticsModule::predictFailures(const string& data) {
-    result.message = "Норма";
-    result.isCritical = false;
-
-    try {
-        json j = json::parse(data);
-        cout << "Прогнозирование отказов датчика: " << j["sensor_id"] << endl;
-
-        if (j["type"] == "temperature" && j["value"] > 30.0) {
-            result.message = "ОПАСНО! Высокий риск перегрева";
-        }
-        else if (j["type"] == "pressure" && j["value"] > 7.5) {
-            result.message = "ОПАСНО! Высокий риск скачка напряжения";
-        }
+vector<AnalyticsModule::AnalysisResult> AnalyticsModule::analyzeAllData(
+    shared_ptr<SensorDataCollection> collection
+) {
+    vector<AnalysisResult> results;
+    auto iterator = collection->createIterator();
+    while (iterator->hasNext()) {
+        results.push_back(analyzeData(iterator->next()));
     }
-    catch (const json::parse_error& e) {
-        result.message = "Ошибка анализа JSON в модуле прогнозирования: " + std::string(e.what());
-        result.isCritical = true;
+    return results;
+}
+
+vector<AnalyticsModule::AnalysisResult> AnalyticsModule::predictAllFailures(
+    shared_ptr<SensorDataCollection> collection
+) {
+    vector<AnalysisResult> results;
+    auto iterator = collection->createIterator();
+    while (iterator->hasNext()) {
+        results.push_back(predictFailures(iterator->next()));
     }
+    return results;
 }

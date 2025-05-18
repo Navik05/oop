@@ -1,26 +1,15 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include "TemperatureSensor.h"
-#include <ctime>
-#include <iomanip>
-#include <sstream>
 
-string TemperatureSensor::collData() {
-    // Генерация тестовых данных температуры
-    double temperature = 20.0 + (rand() % 200) / 10.0;
-
-    time_t now = time(nullptr);
-    tm tm = *gmtime(&now);
-    ostringstream oss;
-    oss << put_time(&tm, "%Y-%m-%dT%H:%M:%SZ");
-
-    ostringstream data;
-    data << R"({"sensor_id":"temp_1","type":"temperature","value":)"
-        << temperature << R"(,"unit":"C","timestamp":")"
-        << oss.str() << "\"}";
-
-    return data.str();
+void TemperatureSensor::collData() {
+    // Генерация данных температуры
+    data.type = "temperature";
+    data.sensor_id = 1;
+    data.value = 20.0 + (rand() % 200) / 10.0;    //20.0-39.9
+    data.unit = "C";
+    cout << "Показания датчика " + data.type << data.sensor_id << ": " << data.value << " " << data.unit << endl;
 }
 
-void TemperatureSensor::sendData(const string& data) {
-    cout << "Данные о температуре: " << data << endl;
+vector<SensorData> TemperatureSensor::sendData() {
+    cout << "Передача данных о температуре серверу" << endl;
+    return { data };
 }

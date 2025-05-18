@@ -1,12 +1,10 @@
 #pragma once  
-#include <iostream>
 #include <string>
-
-using namespace std;
+#include "Sensor.h"
 
 class DataReceiver {
 public:
-    bool receiveData(const string& data);
-    bool validateData(const string& data);
-    string formatData(const string& data);
+    bool receiveData(SensorData data);
+    bool validateData(SensorData data);
+    SensorData formatData(SensorData data);
 };

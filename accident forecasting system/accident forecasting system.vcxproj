@@ -136,10 +136,10 @@
     <ClCompile Include="DataStorageImpl.cpp" />
     <ClCompile Include="DataStorageProxy.cpp" />
     <ClCompile Include="EmailNotifier.cpp" />
-    <ClCompile Include="IDataAdapter.cpp" />
-    <ClCompile Include="JsonDataAdapter.cpp" />
+    <ClCompile Include="HumiditySensor.cpp" />
     <ClCompile Include="LoggingNotifierDecorator.cpp" />
     <ClCompile Include="NotificationSystem.cpp" />
+    <ClCompile Include="SensorAdapter.cpp" />
     <ClCompile Include="SensorDataCollection.cpp" />
     <ClCompile Include="SensorDataIterator.cpp" />
     <ClCompile Include="SensorGroup.cpp" />
@@ -157,10 +157,10 @@
     <ClInclude Include="DataStorageImpl.h" />
     <ClInclude Include="DataStorageProxy.h" />
     <ClInclude Include="EmailNotifier.h" />
-    <ClInclude Include="IDataAdapter.h" />
-    <ClInclude Include="JsonDataAdapter.h" />
+    <ClInclude Include="HumiditySensor.h" />
     <ClInclude Include="LoggingNotifierDecorator.h" />
     <ClInclude Include="NotificationSystem.h" />
+    <ClInclude Include="SensorAdapter.h" />
     <ClInclude Include="SensorDataCollection.h" />
     <ClInclude Include="SensorDataIterator.h" />
     <ClInclude Include="SensorGroup.h" />

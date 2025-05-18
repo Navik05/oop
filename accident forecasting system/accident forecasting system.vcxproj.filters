@@ -51,12 +51,6 @@
     <ClCompile Include="SMSNotifier.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="IDataAdapter.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonDataAdapter.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="LoggingNotifierDecorator.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -73,6 +67,12 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="VectorSensorDataIterator.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="HumiditySensor.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorAdapter.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -110,12 +110,6 @@
     <ClInclude Include="SMSNotifier.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="IDataAdapter.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="JsonDataAdapter.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="LoggingNotifierDecorator.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -132,6 +126,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="VectorSensorDataIterator.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="HumiditySensor.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorAdapter.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

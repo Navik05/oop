@@ -1,11 +1,10 @@
 #pragma once  
 #include <string>
 #include "Sensor.h"
-#include "IDataAdapter.h"
 
 class DataReceiver {
 public:
-    bool receiveData(IDataAdapter& adapter);
+    bool receiveData(SensorData data);
     bool validateData(SensorData data);
     SensorData formatData(SensorData data);
 };

@@ -8,10 +8,11 @@
 #include "AnalyticsModule.h"
 #include "EmailNotifier.h"
 #include "SMSNotifier.h"
-#include "JsonDataAdapter.h"
 #include "LoggingNotifierDecorator.h"
 #include "SensorGroup.h"
 #include "VectorSensorDataCollection.h"
+#include "HumiditySensor.h"
+#include "SensorAdapter.h"
 
 void simulateSystem();
 using namespace std;
@@ -36,16 +37,29 @@ int main() {
 void simulateSystem() {
     cout << "\n=== Инициализация системы мониторинга ===\n" << endl;
 
-    // Создаем отдельные датчики (5-6)
-    auto tempSensor = make_shared<TemperatureSensor>();
-    auto voltageSensor = make_shared<VoltageSensor>();
+    // Создаём датчик влажности
+    auto thirdPartySensor = make_unique<HumiditySensor>();
+    auto humiditySensor = make_unique<SensorAdapter>(move(thirdPartySensor));
 
-    // Создаем группу датчиков (5-6)
-    auto sensorGroup = make_shared<SensorGroup>("*Основные датчики*");
-    sensorGroup->add(tempSensor);
-    sensorGroup->add(voltageSensor);
+    // Создаем отдельные датчики
+    auto tempSensor1 = make_shared<TemperatureSensor>();
+    auto tempSensor2 = make_shared<TemperatureSensor>();
+    auto voltageSensor1 = make_shared<VoltageSensor>();
+    auto voltageSensor2 = make_shared<VoltageSensor>();
 
-    cout << "Датчики инициализированы: 1 температурный, 1 датчик давления" << endl;
+    // Создаем группы датчиков
+    auto sensorGroup1 = make_shared<SensorGroup>("*2 датчика*");
+    sensorGroup1->add(tempSensor1);
+    sensorGroup1->add(voltageSensor1);
+    sensorGroup1->add(shared_ptr<Sensor>(move(humiditySensor)));
+
+    // Объединяем группы
+    auto sensorGroup2 = make_shared<SensorGroup>("*Все датчики*");
+    sensorGroup2->add(tempSensor2);
+    sensorGroup2->add(voltageSensor2);
+    sensorGroup2->add(sensorGroup1);
+
+    cout << "Датчики инициализированы: 2 температурных, 2 давления, 1 влажности" << endl;
 
     // 2. Инициализация компонентов обработки данных
     DataReceiver receiver;
@@ -66,22 +80,18 @@ void simulateSystem() {
     );
 
     cout << "Система оповещения готова (Email и SMS)\n" << endl;
-
     cout << "=== Запуск цикла мониторинга ===" << endl;
 
-    // Собираем данные со всей группы (5-6)
-    sensorGroup->collData();
+    // Собираем данные со всей группы
+    sensorGroup2->collData();
 
     // Отправляем данные всей группы на сервер (5-6)
-    vector<SensorData> data = sensorGroup->sendData();
+    vector<SensorData> data = sensorGroup2->sendData();
 
     for (int i = 0; i < data.size(); ++i)
     {
-        // Преобразование данных из JSON формата в SensorData (5-6)
-        JsonDataAdapter jsonAdapter(data[i]);
-
         // 5.3 Прием и проверка данных
-        if (receiver.receiveData(jsonAdapter)) {
+        if (receiver.receiveData(data[i])) {
 
             // 5.4 Сохранение данных (с кэшированием через прокси)
             storageProxy.saveData(data[i]);
